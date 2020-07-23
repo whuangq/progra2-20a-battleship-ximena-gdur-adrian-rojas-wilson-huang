@@ -1,18 +1,35 @@
 #ifndef SHIP_H
 #define SHIP_H
-#include "cell.h"
+#include "Cell.h"
 
 class Ship
 {
-public:    
-    int lives,ability_range;
+private:   
+/// Attributes
+    int lives;
+    int ability_range;
     bool alive; 
-    Cell coordinates[];
+    //Cell coordinates[];
 
+public:
+/// Constructor
     Ship();
+
+/// Functions
+    /*
+    @brief It decreases the lives of this ship, when hit
+    @param This function doesn't recieve anything
+    @return This function doesn't return anything
+    */
     void loseLife();
-    void specialAbility();
-    void clearPosition();
+
+    /*
+    @brief This executes the special ability
+    @param This function doesn't recieve anything
+    @return This function doesn't return anything
+    
+    void specialAbility();*/
+    //void clearPosition();
 };
 
 #endif // SHIP_H

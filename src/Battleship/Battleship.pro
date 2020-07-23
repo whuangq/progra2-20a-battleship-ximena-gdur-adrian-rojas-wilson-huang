@@ -18,10 +18,19 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += \
     Board.cpp \
     main.cpp \
+    Cell.cpp \
+    Controller.cpp \
+    Visualizer.cpp \
+    Ship.cpp \
     MainWindow.cpp
 
 HEADERS += \
     Board.h \
+    Cell.h \
+    Global.h \
+    Controller.h \
+    Visualizer.h \
+    Ship.h \
     MainWindow.h
 
 FORMS += \

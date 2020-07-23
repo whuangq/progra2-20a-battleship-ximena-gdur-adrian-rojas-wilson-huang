@@ -3,6 +3,8 @@
 
 #include "Controller.h"
 #include "Ship.h"
+#include "Board.h"
+
 
 
 Controller& Controller::getInstance()
@@ -12,8 +14,8 @@ Controller& Controller::getInstance()
 }
 
 Controller::Controller()
-	: player1 (Player())
-	, player2 (Player())
+	: player1 (Board())
+	, player2 (Board())
 	, visual (Visualizer())
 	, position (HORIZONTAL)
 {
@@ -48,7 +50,7 @@ void Controller::begin()
 }
 
 // Create player's board
-void Controller::createPlayersBoard (Player& thisPlayer)
+void Controller::createPlayersBoard (Board& thisPlayer)
 {
 	thisPlayer.ClearGrid();
 
@@ -56,7 +58,7 @@ void Controller::createPlayersBoard (Player& thisPlayer)
 	visual.showBoard(thisPlayer);
 
 	// Repeat for each ship in that player's list 
-	for (std::array<Ship*, TOTAL_SHIPS> element : thisPlayer.listOfShips)
+	for (Ship& element : thisPlayer.getListOfShips())
 	{
 		// Choose place for that ship
 		choosePlace(element, thisPlayer);
@@ -78,7 +80,7 @@ void Controller::createPlayersBoard (Player& thisPlayer)
 }
 
 // Choose place for that ship:	
-void Controller::choosePlace (Player& thisPlayer, Ship& thisShip)
+void Controller::choosePlace (Ship& thisShip, Board& thisPlayer)
 {
 	// Create chosen as false
 	bool chosen = false;
@@ -99,20 +101,20 @@ void Controller::choosePlace (Player& thisPlayer, Ship& thisShip)
 	}
 }
 
-bool Controller::chooseCell (std::string cell, Player& player, Ship& ship)
+bool Controller::chooseCell (std::string& cell, Board& player, Ship& ship)
 {
 	bool setShipSuccessful = false;
 	// If cell isEmpty
-	if (player.board[cell[0]][cell[1]].isEmpty() == false)
+	if (player.getElement ( (int) cell[0], (int) cell[1] ).isEmpty() == false)
 	{
-		// If position is horizontal
+		// If position is horizontal 
 		if (position == HORIZONTAL)
 			// Assign setShipSucessful the result of setting ship in cell and cellToTheRight
-			setShipSuccessful = ship.setShip(board[cellChosen[0]][cellChosen[1]], board[cellChosen[0]][cellChosen[1] + 1]);
+			setShipSuccessful = ship.setShip (player.getElement((int)cell[0], (int)cell[1]), player.getElement((int)cell[0], (int) cell[1] + 1);
 		// Else if position is vertical
 		else if (position == VERTICAL)
 			// Assign setShipSucessful the result of setting ship in call and cellBelow
-			setShipSuccessful = ship.setShip(board[cellChosen[0]][cellChosen[1]], board[cellChosen[0] + 1][cellChosen[1]]);
+			setShipSuccessful = ship.setShip (player.getElement((int)cell[0], (int)cell[1]), player.getElement((int)cell[0] + 1, (int)cell[1];
 		// If setShipSucessful is false then
 		if (setShipSuccessful == false)
 			// Print "Not available choose another"
@@ -125,7 +127,7 @@ bool Controller::chooseCell (std::string cell, Player& player, Ship& ship)
 	return false;
 }
 	
-void Controller::executeAttack(Player thisPlayer)
+void Controller::executeAttack(Board& thisPlayer)
 {
 	// Create attackSucessful as false
 	bool attackSucessful = false;
@@ -149,13 +151,13 @@ void Controller::executeAttack(Player thisPlayer)
 }
 
 // Send response
-void Controller::sendResponse(Player otherPlayer)
+void Controller::sendResponse(Board& otherPlayer)
 {
 	// Print TOTAL_SHIPS - foundShips for the other player
 	std::string message = "The other player has attacked ";
-	message += std::to_string(player.foundShips);
+	message += std::to_string(otherPlayer.getShipsLeft());
 	message += " of your ships. \n";
-	message += std::to_string(TOTAL_SHIPS - otherPlayer.foundShips);
+	message += std::to_string(TOTAL_SHIPS - otherPlayer.getShipsLeft());
 	message += " remain."
 
 	visual.showMessage(message, otherPlayer);

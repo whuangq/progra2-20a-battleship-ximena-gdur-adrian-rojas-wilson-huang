@@ -1,25 +1,34 @@
-#include "cell.h"
-#include "ship.h"
+#include "Cell.h"
+#include "Ship.h"
+
 Cell::Cell()
+    : shipPtr(nullptr)
+    , attacked (false)
 {
-    
-}
-bool attacked=false;
-Ship* ship_ptr;
-
-bool isEmpty(){
-    if(ship_ptr!=nullptr) return false;
-    return true;
 }
 
-int attack(){
-   if(attacked==false){
-        if(!isEmpty()){
-            ship_ptr->loseLife();
-        }
-    attacked=true;
-   }
- return 0;
+bool Cell::isEmpty()
+{
+    return this->shipPtr == nullptr;
+}
+
+void Cell::assignShip(Ship ship)
+{
+    this->shipPtr = &ship;
+}
+
+void Cell::getAttacked()
+{
+    if ( this->attacked == false && !( this->isEmpty() ) )
+    { 
+        this->attacked = true;
+        (*shipPtr).loseLife();
+    }
+}
+
+void Cell::clearPosition()
+{
+    this->shipPtr = nullptr;
 }
 
 

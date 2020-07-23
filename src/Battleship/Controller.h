@@ -2,12 +2,9 @@
 #define CONTROLLER_H
 
 #include "Visualizer.h"
-#include "Player.h"
+#include "Board.h"
 #include "Ship.h"
 #include <string>
-
-
-const int TOTAL_SHIPS = 5;
 
 /**
  *  Controller class. Manages each player's actions and what they see.
@@ -26,8 +23,8 @@ public:
 
 private:
 	/// Attributes
-	Player player1; /* Instance of Player. Indicates the first player.*/
-	Player player2; /* Instance of Player. Indicates the second player.*/
+	Board player1; /* Instance of Board. Indicates the first player.*/
+	Board player2; /* Instance of Board. Indicates the second player.*/
 	Visualizer visual; /* Instance of Visualizer.*/
 	Direction position; /* Instance of the enumeration Direction. Indicates is the position is vertical or horizontal.*/
 
@@ -50,7 +47,7 @@ public:
 	@param thisPlayer A reference to the current player.
 	@return Does not return anything.
 	*/
-	void createPlayersBoard(Player& thisPlayer);
+	void createPlayersBoard(Board& thisPlayer);
 
 	/*
 	@brief Chooses a spot to place the ship, based on the user's input.
@@ -58,8 +55,7 @@ public:
 	@param thisShip A reference to the current ship.
 	@return Does not return anything.
 	*/
-	void choosePlace(Player& thisPlayer, Ship& thisShip);
-
+	void choosePlace(Ship& thisShip, Board& thisPlayer);
 	/*
 	@brief Checks if the user's choice is viable, and acts accordingly.
 	@param cell A reference to the current cell.
@@ -67,21 +63,22 @@ public:
 	@param thisShip A reference to the current ship.
 	@return A boolean value indicating if it was successful.
 	*/
-	bool chooseCell(std::string cell, Player& player, Ship& ship);
+	
+	bool chooseCell(std::string& cell, Board& player, Ship& ship);
 
 	/*
 	@brief Executes a player's attack, based on the user's input.
 	@param thisPlayer A reference to the current player.
 	@return Does not return anything.
 	*/
-	void executeAttack(Player thisPlayer);
+	void executeAttack(Board& thisPlayer);
 
 	/*
 	@brief Sends the other player a message indicating the state of it's opponent's game.
 	@param otherPlayer A reference to the current player.
 	@return Does not return anything.
 	*/
-	void sendResponse(Player otherPlayer);
+	void sendResponse(Board& otherPlayer);
 
 private:
 	/// Constructors

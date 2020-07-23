@@ -1,18 +1,25 @@
-#include "ship.h"
+#include "Ship.h"
 
-Ship::Ship(){
-    alive=true;
+Ship::Ship()
+    : lives ()
+    , ability_range ()
+    , alive (true)
+{
 }
 
-
-
-void Ship::loseLife(){
-    lives--;
-    if(lives==0){
-        alive=false;
-    }
+void Ship::loseLife()
+{
+    --this->lives;
+    if(this->lives==0)
+        this->alive=false;
 }
 
-void Ship::specialAbility(){
+void Ship::specialAbility()
+{
 
 }
+
+/*void Ship::clearPosition()
+{
+
+}*/
