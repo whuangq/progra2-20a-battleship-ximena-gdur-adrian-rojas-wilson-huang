@@ -57,7 +57,7 @@ public:
     int foundShips();
 
     /*
-    @brief Shows the current state od the board.
+    @brief Shows the current state of the board.
     @return Does not return anything.
     */
     //void updateBoard(bool a, int row, int col);
