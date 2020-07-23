@@ -8,8 +8,12 @@
 class Visualizer
 {
 public:
+	/*
+	@brief Gets the only instance of the class Visualizer.
+	@return A reference to that instance.
+	*/
 	Visualizer& getInstance();
-
+	
 	/*
 	@brief Shows the user player's current board
 	@param thisPlayer A reference to the current player
