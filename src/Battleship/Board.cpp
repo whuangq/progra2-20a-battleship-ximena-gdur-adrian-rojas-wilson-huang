@@ -17,6 +17,20 @@ Board::Board()
         listOfShips*/
 }
 
+Board::~Board()
+{
+    for (int cellIndex = 0; cellIndex < MATRIX_DIMENSIONS; cellIndex++)
+        delete[] board [cellIndex];
+
+    delete[] board;
+}
+
+
+bool Board::getStatusSpecialAttack()
+{
+    return this->specialAttack;
+}
+
 int Board::getShipsLeft()
 {
     return this->shipsLeft;
@@ -33,27 +47,54 @@ Cell& Board::getElement(int row, int col)
 }
 
 
+bool Board::operator==(Board& other)
+{
+    return this == &other;
+}
+
+
 // Sets the all the cells pointer to null.
 void Board::clearGrid() {
     for (int rowIndex = 0; rowIndex < MATRIX_DIMENSIONS; rowIndex++) {
         for (int colIndex = 0; colIndex < MATRIX_DIMENSIONS; colIndex++) {
-            board[rowIndex][colIndex] = board[rowIndex][colIndex].clearPosition();
+            this->board[rowIndex][colIndex].clearPosition();
         }
     }
 }
+
 // Place the ship in the given position of the booard.
-void Board::setShips(int row, int col, int shipNumber) {
-    board[row][col].assignShip(listOfShips[shipNumber]);
+void Board::setShips(int row, int col, Ship& ship) {
+    board[row][col].assignShip(ship);
 }
+
 // Decrease the shipsLeft when the ships life gets to 0.
 int Board::foundShips() {
-    return shipsLeft -= 1;
+    return --shipsLeft;
 }
-/*void Board::updateBoard(bool a, int row, int col) {
 
-}*/
-
-bool Board::operator==(Board& other)
+void Board::attack()
 {
-    return this == &other;
+    Visualizer visual = visual.getInstance();
+    // Wait for players input
+    std::string cell = visual.chooseCell(*this);
+    bool success = board[cell[0]][cell[1]].getAttacked();
+
+    if (success == false)
+    {
+        visual.showMessage ("That cell is not available, choose another.", *this);
+        this->attack();
+    }
+    else {
+        if (board[cell[0]][cell[1]].isEmpty()) {
+            visual.showMessage("A ship has fallen.", *this);
+        }
+        else {
+            visual.showMessage("You've hit something.", *this);
+        }
+    }
+}
+
+void Board::executeSpecialAttack()
+{
+
 }

@@ -87,6 +87,5 @@ private:
 	Controller(Controller&& other) = delete;
 	Controller& operator= (const Controller& other) = delete;
 	Controller& operator= (Controller&& other) = delete;
-	~Controller();
 };
 #endif // CONTROLLER_H

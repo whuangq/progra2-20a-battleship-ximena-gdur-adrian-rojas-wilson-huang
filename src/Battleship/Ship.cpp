@@ -1,17 +1,27 @@
 #include "Ship.h"
 
 Ship::Ship()
-    : lives ()
+    : totalLives(1)
+    , livesLeft (totalLives)
     , ability_range ()
     , alive (true)
 {
 }
 
-void Ship::loseLife()
+int Ship::getLives()
 {
-    --this->lives;
-    if(this->lives==0)
+    return this->livesLeft;
+}
+
+bool Ship::loseLife()
+{
+    --this->livesLeft;
+
+    if(this->livesLeft ==0) {
         this->alive=false;
+        return false;
+    }
+    return true;
 }
 
 void Ship::specialAbility()
@@ -19,7 +29,8 @@ void Ship::specialAbility()
 
 }
 
-/*void Ship::clearPosition()
+void Ship::clearPosition()
 {
-
-}*/
+    livesLeft = totalLives;
+    alive = true;
+}

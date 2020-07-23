@@ -16,12 +16,8 @@ Controller& Controller::getInstance()
 Controller::Controller()
 	: player1 (Board())
 	, player2 (Board())
-	, visual (Visualizer())
+	, visual (visual.getInstance())
 	, position (HORIZONTAL)
-{
-}
-
-Controller::~Controller()
 {
 }
 
@@ -36,14 +32,17 @@ void Controller::begin()
 	visual.showBoard(player2);
 
 	// Repeat while foundShips is lesser than TOTAL_SHIPS
-	while (player1.foundShips < TOTAL_SHIPS && player2.foundShips < TOTAL_SHIPS)
+	while (player1.getShipsLeft() < TOTAL_SHIPS && player2.getShipsLeft() < TOTAL_SHIPS)
 	{
 		// Execute attack
 		executeAttack(player1);
+		sendResponse(player2);
+
 		executeAttack(player2);
+		sendResponse(player1);
 	}
 
-	if (player1.foundShips == TOTAL_SHIPS)
+	if (player1.getShipsLeft() == TOTAL_SHIPS)
 		visual.showMessage("You won!", player1);
 	else 
 		visual.showMessage("You won!", player2);
@@ -52,7 +51,7 @@ void Controller::begin()
 // Create player's board
 void Controller::createPlayersBoard (Board& thisPlayer)
 {
-	thisPlayer.ClearGrid();
+	thisPlayer.clearGrid();
 
 	// Show board
 	visual.showBoard(thisPlayer);
@@ -70,12 +69,6 @@ void Controller::createPlayersBoard (Board& thisPlayer)
 	// If they answer false
 	if (answer == false) {
 		createPlayersBoard (thisPlayer);
-		/*
-		// Ask which ship they want to change
-		int ship = visual.askNumber("Write the number of the ship you wish to change", thisPlayer, TOTAL_SHIPS);
-		// Choose place for that ship
-		choosePlace (thisPlayer, thisPlayer.listOfShips[ship]);
-		*/
 	}
 }
 
@@ -84,47 +77,77 @@ void Controller::choosePlace (Ship& thisShip, Board& thisPlayer)
 {
 	// Create chosen as false
 	bool chosen = false;
-	bool changeDirection = false;
+	bool notAvailable = false;
 	// While chosen is false                             
 	while (chosen == false)
 	{
 		// Wait for players input
 		std::string cellChosen = visual.chooseCell(thisPlayer);
 		// Go to that cell
-		visual.showCell(cellChosen, thisPlayer);
-		// Ask if the cell they chose is correct
-		bool correct = visual.ask("Is this correct?", thisPlayer);
+		for (int shipCellIndex = 0; shipCellIndex < thisShip.getLives(); shipCellIndex++)
+		{
+			if (notAvailable = false) {
+				if (position == HORIZONTAL) 
+				{ 
+					if ((int)cellChosen[1] + shipCellIndex < MATRIX_DIMENSIONS) {
+						visual.showCell((int)cellChosen[0], (int)cellChosen[1] + shipCellIndex, thisPlayer);
+					}
+					else {
+						visual.showMessage("Not available", thisPlayer);
+						notAvailable = true;
+					}
+				}
+				else if (position == VERTICAL) {
+					if ((int)cellChosen[0] + shipCellIndex < MATRIX_DIMENSIONS) {
+						visual.showCell((int)cellChosen[0] + shipCellIndex, (int)cellChosen[1], thisPlayer);
+					}
+					else {
+						visual.showMessage("Not available", thisPlayer);
+						notAvailable = true;
+					}
+				}
+			}
+		}
+
+		bool correct = true;
+		if (notAvailable = false) {
+			// Ask if the cell they chose is correct
+			correct = visual.ask("Is this correct?", thisPlayer);
 			// If it is
-		if (correct == true)
+			if (correct == false )
 			// Assign chosen true
-			chosen = chooseCell(cellChosen, thisPlayer, thisShip);
+				chooseCell(cellChosen, thisPlayer, thisShip);
+		}
+		else {
+			chooseCell(cellChosen, thisPlayer, thisShip);
+		}
 	}
 }
 
 bool Controller::chooseCell (std::string& cell, Board& player, Ship& ship)
 {
-	bool setShipSuccessful = false;
 	// If cell isEmpty
 	if (player.getElement ( (int) cell[0], (int) cell[1] ).isEmpty() == false)
 	{
-		// If position is horizontal 
-		if (position == HORIZONTAL)
-			// Assign setShipSucessful the result of setting ship in cell and cellToTheRight
-			setShipSuccessful = ship.setShip (player.getElement((int)cell[0], (int)cell[1]), player.getElement((int)cell[0], (int) cell[1] + 1);
-		// Else if position is vertical
-		else if (position == VERTICAL)
-			// Assign setShipSucessful the result of setting ship in call and cellBelow
-			setShipSuccessful = ship.setShip (player.getElement((int)cell[0], (int)cell[1]), player.getElement((int)cell[0] + 1, (int)cell[1];
-		// If setShipSucessful is false then
-		if (setShipSuccessful == false)
-			// Print "Not available choose another"
-			visual.showMessage("Not available, choose another");
+		for (int shipCellIndex = 0; shipCellIndex < ship.getLives(); shipCellIndex++)
+		{
+			// If position is horizontal
+			if (position == HORIZONTAL)
+				// Set ship in call and cellToTheRight
+				player.setShips((int)cell[0], (int)cell[1] + shipCellIndex, ship);
+			// Else if position is vertical
+			else if (position == VERTICAL)
+				// Set ship in call and cellBelow
+				player.setShips((int)cell[0] + shipCellIndex, (int)cell[1], ship);
+		}
 		return true;
 	}
-
-	// Print "Not available choose another"
-	visual.showMessage("Already occupied, choose another");
-	return false;
+	else
+	{
+		// Print "Not available choose another"
+		visual.showMessage("Already occupied, choose another");
+		return false;
+	}
 }
 	
 void Controller::executeAttack(Board& thisPlayer)
@@ -132,22 +155,20 @@ void Controller::executeAttack(Board& thisPlayer)
 	// Create attackSucessful as false
 	bool attackSucessful = false;
 	// If specialAttack is false
-	if (thisPlayer.specialAttack == false)
+	if (thisPlayer.getStatusSpecialAttack() == false)
 	{
 		// Ask player if they want to use the special attack and if the answer is true
-		if (visual.ask("Do you want to use the special attack", thisPlayer) == true)
+		if (visual.ask("Do you want to use the special attack?", thisPlayer) == true) {
+			// Send response
+			visual.showMessage("The other player has used a special attack against you!", (thisPlayer == player1) ? player1 : player2);
 			// Execute special attack
-			thisPlayer.executeSpecialAttack();
-		// Else 
-		else
-		{
-			// Attack
-			thisPlayer.attack();
+			return thisPlayer.executeSpecialAttack();
 		}
-
-		// Send response
-		sendResponse((thisPlayer == player1) ? player1 : player2);
 	}
+		// Send response
+		visual.showMessage ("The other player has attacked you!", (thisPlayer == player1) ? player1 : player2);
+		// Attack
+		return thisPlayer.attack();
 }
 
 // Send response
@@ -158,7 +179,7 @@ void Controller::sendResponse(Board& otherPlayer)
 	message += std::to_string(otherPlayer.getShipsLeft());
 	message += " of your ships. \n";
 	message += std::to_string(TOTAL_SHIPS - otherPlayer.getShipsLeft());
-	message += " remain."
+	message += " remain.";
 
 	visual.showMessage(message, otherPlayer);
 }
