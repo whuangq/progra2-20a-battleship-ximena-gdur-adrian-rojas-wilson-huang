@@ -19,10 +19,10 @@ bool Visualizer::ask(std::string str, Board& thisPlayer)
 	return false;
 }
 
-/*int Visualizer::askNumber(std::string str, Board& thisPlayer)
+int Visualizer::askNumber(std::string str, Board& thisPlayer)
 {
 	return 0;
-}*/
+}
 
 std::string Visualizer::chooseCell(Board& thisPlayer)
 {

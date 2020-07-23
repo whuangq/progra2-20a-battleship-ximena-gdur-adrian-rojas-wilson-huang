@@ -96,5 +96,30 @@ void Board::attack()
 
 void Board::executeSpecialAttack()
 {
+    Visualizer visual = visual.getInstance();
+    std::string message = "Which ship would you like to use for your special attack?\n";
 
+    message += "Ship #1:\n";
+    message += listOfShips[0].getDescription();
+    message += "\n\n";
+
+    message += "Ship #2:\n";
+    message += listOfShips[1].getDescription();
+    message += "\n\n";
+
+    message += "Ship #3: \n";
+    message += listOfShips[2].getDescription();
+    message += "\n\n";
+
+    message += "Ship #4: \n";
+    message += listOfShips[3].getDescription();
+    message += "\n\n";
+
+    message += "Ship #5: \n";
+    message += listOfShips[4].getDescription();
+    message += "\n\n";
+
+    int shipNumber = visual.askNumber(message, *this);
+
+    listOfShips[shipNumber].specialAbility();
 }

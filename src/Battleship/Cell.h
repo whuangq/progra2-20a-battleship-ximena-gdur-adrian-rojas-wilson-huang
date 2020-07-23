@@ -1,6 +1,7 @@
 #ifndef CELL_H
 #define CELL_H
 
+#include <string>
 #include "Ship.h"
 
 class Cell
@@ -48,6 +49,8 @@ public:
     @return It doesn't return aything.
     */
     void clearPosition();
+
+    std::string getDescription();
 };
 
 #endif // CELL_H

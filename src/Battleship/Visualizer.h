@@ -37,7 +37,13 @@ public:
 	*/
 	bool ask (std::string str, Board& thisPlayer);
 
-	//int askNumber(std::string str, Board& thisPlayer);
+	/*
+	@brief Asks a question to the user, it expects a numerical response.
+	@param str Question to be asked.
+	@param thisPlayer A reference to the current player.
+	@return A numerical value in response to what was asked.
+	*/
+	int askNumber (std::string str, Board& thisPlayer);
 
 	/*
 	@brief Facilitates the user the opportunity to choose a cell to place a ship. It shows a window with buttons to choose from.

@@ -45,4 +45,9 @@ void Cell::clearPosition()
     attacked = false;
 }
 
+std::string Cell::getDescription()
+{
+    return std::string();
+}
+
 
