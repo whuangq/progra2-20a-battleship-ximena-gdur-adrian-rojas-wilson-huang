@@ -1,6 +1,11 @@
-#include "Controller.h"
+#include "MainWindow.h"
 
-int main ()
+#include <QApplication>
+
+int main(int argc, char *argv[])
 {
-	return Controller::getInstance().begin(),0;
+    QApplication a(argc, argv);
+    MainWindow w;
+    w.show();
+    return a.exec();
 }
